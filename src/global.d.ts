@@ -11,6 +11,9 @@ declare global {
     operator?: boolean;
     search?: { [key: number]: SearchType };
     field?: { [key: number]: fieldType };
+    page?: number;
+    limit?: number;
+    searchAfter?: string;
   }
 
   interface FieldType {

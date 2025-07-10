@@ -1,12 +1,14 @@
+import { count } from "console";
 import React, { useEffect, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 
 interface NewDataProps {
   data: IData;
   number: number;
+  disable: boolean;
 }
 
-const NewData: React.FC<NewDataProps> = ({ data, number }) => {
+const NewData: React.FC<NewDataProps> = ({ data, number, disable }) => {
   const [details, setDetails] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,20 +32,26 @@ const NewData: React.FC<NewDataProps> = ({ data, number }) => {
     }
   }, [details]);
 
+  useEffect(() => {
+    if (disable) setDetails(false);
+  }, [disable]);
+
   return (
     <fieldset className="fieldset overflow-hidden border-base-300 rounded w-xs border dark:bg-neutral-800 dark:border-neutral-900">
-      <div className="flex justify-between bg-indigo-700 dark:bg-indigo-900 p-2 rounded-t text-gray-200 dark:text-gray-300">
-        <p className="pl-0">
-          <strong>{data.fullName} </strong>
-        </p>
+      <div>
         <button
-          className=""
+          className="flex justify-between w-full items-center bg-indigo-700 dark:bg-indigo-900 p-2 rounded-t text-gray-200 dark:text-gray-300"
+          disabled={disable}
           onClick={() => {
-            console.log(data);
             setDetails((prev) => !prev);
           }}
         >
-          {details ? <BsCaretUpFill /> : <BsCaretDownFill />}
+          <div className="flex items-center">
+            <p className="flex font-light text-xl">{data.fullName}</p>
+          </div>
+          <div className={`${disable ? "blur-[1px]" : ""}`}>
+            {details ? <BsCaretUpFill /> : <BsCaretDownFill />}
+          </div>
         </button>
       </div>
       {details ? (

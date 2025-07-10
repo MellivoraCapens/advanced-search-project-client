@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchData } from "../utils/fetchData";
 import NewDatas from "./NewDatas";
+import NewPaginationCursor from "./NewPaginationCursor";
 
 interface NewResultProps {
   body: SearchDetailType;
@@ -11,22 +12,29 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
   const [data, setData] = useState<Array<IData>>([]);
   const [waiting, setWaiting] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
+  const [disable, setDisable] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false);
 
   const handleFetch = async () => {
     setWaiting(true);
+    setShow(false);
     setError("");
     setData([]);
     const data = await fetchData("/data", body);
-    console.log(data);
 
     setWaiting(false);
     if (data.message) {
       setError(data.message);
       return;
     }
-    setData(data.data[0].result);
-    setCount(data.data[0].total[0].count);
+    if (data.data.length) {
+      setData(data.data);
+      setCount(data.count);
+      setDisable(false);
+      setShow(true);
+    }
     if (!data.data.length) {
+      setShow(false);
       setError("No results found");
     }
   };
@@ -73,7 +81,18 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
           </fieldset>
         </div>
       ) : null}
-      {data.length ? <NewDatas datas={data} count={count} /> : null}
+
+      {show ? (
+        <div>
+          <NewPaginationCursor
+            count={count}
+            body={body}
+            setData={setData}
+            setDisable={setDisable}
+          />
+          <NewDatas datas={data} count={count} disable={disable} />
+        </div>
+      ) : null}
     </div>
   );
 };
