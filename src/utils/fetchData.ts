@@ -68,6 +68,6 @@ export const fetchData = async (urlEnd: string, body: SearchDetailType) => {
 
     return data;
   } catch (err: any) {
-    return { message: `Error: ${err.message}!` };
+    return { error: `Error: ${err.message}!`, success: err.success || false };
   }
 };

@@ -20,7 +20,9 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
   const [maxPage, setMaxPage] = useState<number>(
     Math.ceil(count / numberOfData)
   );
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
+  const [currentBody] = useState<SearchDetailType>(body);
 
   useEffect(() => {
     setMaxPage(Math.ceil(count / numberOfData));
@@ -36,13 +38,14 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
   ) => {
     setWaiting(true);
     setDisable(true);
-    const postBody: SearchDetailType = { ...body };
+    const postBody: SearchDetailType = { ...currentBody };
     postBody["limit"] = numberOfData;
     postBody["page"] = page;
     const data = await fetchData("/data/page", postBody);
-    if (!data.data) {
+    console.log(data);
+    if (!data.success) {
+      setErrorMessage(data.error || "An error occurred while fetching data.");
       setError(true);
-      console.log(data);
       setWaiting(false);
       return;
     }
@@ -128,9 +131,10 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
             <p className="font-semibold">
               An error occurred while fetching data.
             </p>
+            <p className="text-sm">{errorMessage}</p>
             <div className="">
               <button
-                className="border border-red-500 px-5 mt-5 rounded-sm disabled:opacity-50 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-neutral-900"
+                className="border border-red-500 px-5 mt-5 disabled:bg-opacity-0 rounded-sm disabled:opacity-50 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-neutral-900"
                 disabled={waiting}
                 onClick={() => fetchPageData(page, numberOfData, body)}
               >

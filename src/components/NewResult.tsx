@@ -21,21 +21,25 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
     setError("");
     setData([]);
     const data = await fetchData("/data", body);
+    console.log(data);
 
     setWaiting(false);
-    if (data.message) {
-      setError(data.message);
+    if (!data.success) {
+      setError(data.error);
       return;
     }
-    if (data.data.length) {
+
+    if (data.count === 0) {
+      setShow(false);
+      setError("No results found");
+      return;
+    }
+
+    if (data.success) {
       setData(data.data);
       setCount(data.count);
       setDisable(false);
       setShow(true);
-    }
-    if (!data.data.length) {
-      setShow(false);
-      setError("No results found");
     }
   };
 
