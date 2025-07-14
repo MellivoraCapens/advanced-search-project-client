@@ -10,3 +10,10 @@
     @apply dark:bg-orange-300/50 dark:text-white bg-orange-300/50 text-black italic px-1 rounded-sm;
   }
 }
+
+@layer utilities {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    @apply appearance-none;
+  }
+}

@@ -14,6 +14,7 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
   const [count, setCount] = useState<number>(0);
   const [disable, setDisable] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
+  const [isAtlas, setIsAtlas] = useState<boolean>(false);
 
   const handleFetch = async () => {
     setWaiting(true);
@@ -36,6 +37,7 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
     }
 
     if (data.success) {
+      setIsAtlas(data.isAtlas);
       setData(data.data);
       setCount(data.count);
       setDisable(false);
@@ -93,6 +95,7 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
             body={body}
             setData={setData}
             setDisable={setDisable}
+            isAtlas={isAtlas}
           />
           <NewDatas datas={data} count={count} disable={disable} />
         </div>
