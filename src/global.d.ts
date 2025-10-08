@@ -7,6 +7,7 @@ declare global {
       operator: boolean;
       path: Array<string>;
     };
+    title?: string;
     detailSearch: boolean;
     operator?: boolean;
     search?: { [key: number]: SearchType };

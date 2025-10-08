@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchData } from "../utils/fetchData";
 import NewDatas from "./NewDatas";
 import NewPaginationCursor from "./NewPaginationCursor";
+import NewIndexModal from "./NewIndexModal";
 
 interface NewResultProps {
   body: SearchDetailType;
@@ -15,24 +16,29 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
   const [disable, setDisable] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [isAtlas, setIsAtlas] = useState<boolean>(false);
+  const [indexBody, setIndexBody] = useState<null | SearchDetailType>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleFetch = async () => {
     setWaiting(true);
     setShow(false);
     setError("");
     setData([]);
+    console.log(body);
     const data = await fetchData("/data", body);
     console.log(data);
 
     setWaiting(false);
     if (!data.success) {
       setError(data.error);
+      setIndexBody(null);
       return;
     }
 
     if (data.count === 0) {
       setShow(false);
       setError("No results found");
+      setIndexBody(null);
       return;
     }
 
@@ -41,6 +47,7 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
       setData(data.data);
       setCount(data.count);
       setDisable(false);
+      setIndexBody({ ...body });
       setShow(true);
     }
   };
@@ -48,12 +55,29 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
   return (
     <div>
       <button
-        className=" mt-2 px-3 py-2 text-xs font-medium text-center text-white bg-emerald-700 rounded-lg hover:bg-emerald-800 disabled:hover:bg-emerald-700  focus:outline-none dark:bg-emerald-700 disabled:opacity-50"
+        className=" mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center text-white bg-emerald-700 rounded hover:bg-emerald-800 disabled:hover:bg-emerald-700  focus:outline-none dark:bg-emerald-700 disabled:opacity-50"
         disabled={waiting}
         onClick={handleFetch}
       >
         Result
       </button>
+      <button
+        className="ml-2 mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center bg-gray-600 hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-600 text-white rounded"
+        disabled={!indexBody}
+        onClick={async () => setShowModal(true)}
+      >
+        {" "}
+        Index
+      </button>
+
+      {showModal ? (
+        <NewIndexModal
+          body={indexBody}
+          setShowModal={setShowModal}
+          setIndexBody={setIndexBody}
+        />
+      ) : null}
+
       {waiting ? (
         <>
           <div role="status" className="flex items-center my-4">
@@ -81,7 +105,7 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
         </>
       ) : null}
       {error ? (
-        <div className="flex justify-center">
+        <div className=" mt-2 flex justify-center">
           <fieldset className=" fieldset border-red-500 rounded border px-4">
             <p className=" text-lg font-medium text-red-500 my-2">{error}</p>
           </fieldset>
