@@ -4,8 +4,10 @@ import NewRadioInput from "./NewRadioInput";
 import NewSearchField from "./NewSearchField";
 import NewTextField from "./NewTextField";
 import NewResult from "./NewResult";
+import NewSavedQueryMenu from "./NewSavedQueryMenu";
 
 const NewMainDetailSearch: React.FC = () => {
+  const [toggle, setToggle] = useState(true);
   const [addDetail, setAddDetail] = useState(false);
   const [operator, setOperator] = useState<boolean>(true);
   const [count, setCount] = useState(0);
@@ -51,59 +53,72 @@ const NewMainDetailSearch: React.FC = () => {
   }, [operator]);
 
   return (
-    <>
-      <NewTextField setSearch={setSearch} />
+    <div>
       <button
-        className="px-3 py-2 text-xs font-medium text-center text-white my-1 rounded bg-indigo-700 hover:bg-indigo-800 dark:bg-indigo-900"
-        onClick={() => setAddDetail((prev) => !prev)}
+        className={` font-thin p-2 ml-2 min-w-[200px] rounded-t border-t border-x text-neutral-600 hover:bg-gray-100 dark:text-neutral-300 border-neutral-300 dark:border-neutral-600 hover:dark:bg-neutral-500/30`}
+        onClick={() => setToggle(!toggle)}
       >
-        {addDetail ? "Remove" : "Add"} Detail From Text Search
+        {toggle ? "Show Saved Queries" : "Show Query Maker"}
       </button>
-      {addDetail ? (
+      <div className={`${toggle ? "invisible max-h-0" : null}`}>
+        <NewSavedQueryMenu />
+      </div>
+      <div className={`${!toggle ? "invisible" : null}`}>
         <div>
-          <fieldset className="fieldset bg-neutral-950/5 w-xs border rounded border-slate-200 p-4 dark:bg-neutral-800 dark:border-neutral-600">
-            <NewRadioInput setOperator={setOperator} />
-            <NewSearchField handleSearchField={setSearch} />
-            {count > 0 ? (
-              <button
-                className="px-3 py-1 text-xs font-medium text-center text-white bg-red-800 rounded hover:bg-red-700  focus:outline-none dark:bg-red-800"
-                onClick={() => {
-                  setSearch((prev) => {
-                    const updatedField = { ...prev.field };
-                    delete updatedField[count - 1];
-                    return {
-                      ...prev,
-                      field: updatedField,
-                    };
-                  });
-                  setCount((prev) => prev - 1);
-                }}
-              >
-                REMOVE GROUP
-              </button>
-            ) : null}
-            {[...Array(count)].map((_, i) => {
-              return (
-                <NewDetailSearch
-                  count={i}
-                  layerC={1}
-                  handleSearchDetail={setSearch}
-                />
-              );
-            })}
-            {count === +process.env.REACT_APP_MAX_COUNT ? null : (
-              <button
-                className="px-3 py-1 text-xs font-medium text-center text-white bg-green-800 rounded hover:bg-green-700  focus:outline-none dark:bg-green-800"
-                onClick={() => setCount((prev) => prev + 1)}
-              >
-                ADD GROUP
-              </button>
-            )}
-          </fieldset>
+          <NewTextField setSearch={setSearch} />
+          <button
+            className="px-3 py-2 text-xs font-medium text-center text-white my-1 rounded bg-indigo-700 hover:bg-indigo-800 dark:bg-indigo-900"
+            onClick={() => setAddDetail((prev) => !prev)}
+          >
+            {addDetail ? "Remove" : "Add"} Detail From Text Search
+          </button>
         </div>
-      ) : null}
-      <NewResult body={search} />
-    </>
+        {addDetail ? (
+          <div>
+            <fieldset className="fieldset bg-neutral-950/5 w-xs border rounded border-slate-200 p-4 dark:bg-neutral-800 dark:border-neutral-600">
+              <NewRadioInput setOperator={setOperator} />
+              <NewSearchField handleSearchField={setSearch} />
+              {count > 0 ? (
+                <button
+                  className="px-3 py-1 text-xs font-medium text-center text-white bg-red-800 rounded hover:bg-red-700  focus:outline-none dark:bg-red-800"
+                  onClick={() => {
+                    setSearch((prev) => {
+                      const updatedField = { ...prev.field };
+                      delete updatedField[count - 1];
+                      return {
+                        ...prev,
+                        field: updatedField,
+                      };
+                    });
+                    setCount((prev) => prev - 1);
+                  }}
+                >
+                  REMOVE GROUP
+                </button>
+              ) : null}
+              {[...Array(count)].map((_, i) => {
+                return (
+                  <NewDetailSearch
+                    count={i}
+                    layerC={1}
+                    handleSearchDetail={setSearch}
+                  />
+                );
+              })}
+              {count === +process.env.REACT_APP_MAX_COUNT ? null : (
+                <button
+                  className="px-3 py-1 text-xs font-medium text-center text-white bg-green-800 rounded hover:bg-green-700  focus:outline-none dark:bg-green-800"
+                  onClick={() => setCount((prev) => prev + 1)}
+                >
+                  ADD GROUP
+                </button>
+              )}
+            </fieldset>
+          </div>
+        ) : null}
+        {toggle ? <NewResult body={search} /> : null}
+      </div>
+    </div>
   );
 };
 

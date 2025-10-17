@@ -45,13 +45,18 @@ const bodyChecker = (body: any): boolean => {
   return isValid;
 };
 
-export const fetchData = async (urlEnd: string, body: SearchDetailType) => {
+export const fetchData = async (
+  urlEnd: string,
+  body: SearchDetailType,
+  checker: boolean
+) => {
   const url = `${process.env.REACT_APP_URL}${urlEnd}`;
   try {
     if (body.text.query === "") {
       throw new Error("Text input is empty");
     }
-    if (body.detailSearch) {
+
+    if (body.detailSearch && checker) {
       if (!bodyChecker(body)) throw new Error("Detail search is not valid");
     }
 
@@ -68,6 +73,7 @@ export const fetchData = async (urlEnd: string, body: SearchDetailType) => {
 
     return data;
   } catch (err: any) {
+    console.dir(err, { depth: null });
     return { error: `Error: ${err.message}!`, success: err.success || false };
   }
 };

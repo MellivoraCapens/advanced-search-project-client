@@ -72,6 +72,17 @@ declare global {
       streetAddress: string;
       zipCode: string;
     };
+    savedQueryIds: Array<string>;
     createdAt: Date;
+  }
+
+  interface ISavedQuery {
+    _id: string;
+    title: string;
+    query: SearchDetailType;
+    status: "pending" | "completed";
+    numberOfResults: number;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }

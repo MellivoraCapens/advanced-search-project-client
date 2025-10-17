@@ -3,13 +3,13 @@ import React, { useEffect } from "react";
 interface NewIndexModalProps {
   body: SearchDetailType | null;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setIndexBody: React.Dispatch<React.SetStateAction<null | SearchDetailType>>;
+  setQueryBody: React.Dispatch<React.SetStateAction<null | SearchDetailType>>;
 }
 
 const NewIndexModal: React.FC<NewIndexModalProps> = ({
   body,
   setShowModal,
-  setIndexBody,
+  setQueryBody,
 }) => {
   document.body.style.overflow = "hidden";
   const [title, setTitle] = React.useState<string>("");
@@ -43,7 +43,7 @@ const NewIndexModal: React.FC<NewIndexModalProps> = ({
     if (d.success) {
       setShowModal(false);
       document.body.style.overflow = "unset";
-      setIndexBody(null);
+      setQueryBody(null);
       alert("Query added indexing que successfully");
       setWaiting(false);
     }
