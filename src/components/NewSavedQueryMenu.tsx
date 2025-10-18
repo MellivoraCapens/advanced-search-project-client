@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import NewSavedQueryResult from "./NewSavedQueryResult";
+import { BsArrowClockwise } from "react-icons/bs";
 
 const NewSavedQueryMenu: React.FC = () => {
   const [savedQueries, setSavedQueries] = React.useState<Array<ISavedQuery>>(
@@ -8,16 +9,13 @@ const NewSavedQueryMenu: React.FC = () => {
   const [selectedQuery, setSelectedQuery] = React.useState<null | ISavedQuery>(
     null
   );
+  const fetchSavedQueries = async () => {
+    const response = await fetch(`${process.env.REACT_APP_URL}/queries`);
+    const data = await response.json();
+    setSavedQueries(data.data);
+    console.log(data.data);
+  };
   useEffect(() => {
-    const fetchSavedQueries = async () => {
-      const response = await fetch(`${process.env.REACT_APP_URL}/queries`);
-      const data = await response.json();
-      setSavedQueries(data.data);
-      console.log(data.data);
-    };
-
-    console.log(savedQueries);
-
     fetchSavedQueries();
   }, []);
 
@@ -28,8 +26,38 @@ const NewSavedQueryMenu: React.FC = () => {
 
   return (
     <div className="text-neutral-600 dark:text-neutral-300">
+      <div className=" flex border-t border-x rounded-t border-neutral-600 max-h-[40px] overflow-hidden">
+        <input
+          className=" outline-none font-light bg-transparent w-full p-2"
+          type="text"
+        />
+        <button
+          className=" dark:bg-neutral-600 dark:hover:bg-neutral-500 text-neutral-900 flex text-center min-w-28 items-center justify-center rounded-l"
+          onClick={(e) => {
+            e.preventDefault();
+            setSavedQueries([]);
+            fetchSavedQueries();
+          }}
+        >
+          <div
+            id="refresh-button"
+            className=" flex items-center justify-center min-w-28 min-h-28 ease-in-out duration-500"
+            onClick={async () => {
+              document
+                .getElementById("refresh-button")
+                ?.classList.add("rotate-[360deg]");
+              await new Promise((_) => setTimeout(_, 500));
+              document
+                .getElementById("refresh-button")
+                ?.classList.remove("rotate-[360deg]");
+            }}
+          >
+            <BsArrowClockwise fontSize={25} />
+          </div>
+        </button>
+      </div>
       <div
-        className={`border border-neutral-300 rounded dark:border-neutral-600 bg-gray-50 dark:bg-neutral-800 ${
+        className={`border border-neutral-300 rounded-b dark:border-neutral-600 bg-gray-50 dark:bg-neutral-800 ${
           selectedQuery ? "h-[200px]" : "min-h-[200px]"
         }`}
       >
