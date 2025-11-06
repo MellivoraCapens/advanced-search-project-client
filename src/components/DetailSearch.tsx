@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import NewRadioInput from "./NewRadioInput";
-import NewSearchField from "./NewSearchField";
+import RadioInput from "./RadioInput";
+import SearchField from "./SearchField";
 
-interface NewDetailSearchProps {
+interface DetailSearchProps {
   count: number;
   handleSearchDetail: React.Dispatch<React.SetStateAction<any>>;
   layerC: number;
 }
 
-const NewDetailSearch: React.FC<NewDetailSearchProps> = ({
+const DetailSearch: React.FC<DetailSearchProps> = ({
   count,
   handleSearchDetail,
   layerC,
@@ -43,8 +43,8 @@ const NewDetailSearch: React.FC<NewDetailSearchProps> = ({
   return (
     <>
       <fieldset className="fieldset my-1 bg-slate-950/5 border-slate-950/20 rounded w-xs border-l p-4 dark:bg-neutral-100/5 dark:border-neutral-600">
-        <NewRadioInput setOperator={setOperator} />
-        <NewSearchField handleSearchField={setSearchDetail} />
+        <RadioInput setOperator={setOperator} />
+        <SearchField handleSearchField={setSearchDetail} />
         {countDetail > 0 ? (
           <button
             className="px-3 py-1 text-xs font-medium text-center text-white bg-red-800 rounded hover:bg-red-700  focus:outline-none dark:bg-red-800"
@@ -65,7 +65,7 @@ const NewDetailSearch: React.FC<NewDetailSearchProps> = ({
         ) : null}
         {[...Array(countDetail)].map((_, i) => {
           return (
-            <NewDetailSearch
+            <DetailSearch
               count={i}
               layerC={layerCount}
               handleSearchDetail={setSearchDetail}
@@ -88,4 +88,4 @@ const NewDetailSearch: React.FC<NewDetailSearchProps> = ({
   );
 };
 
-export default NewDetailSearch;
+export default DetailSearch;

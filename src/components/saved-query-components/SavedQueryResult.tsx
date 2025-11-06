@@ -1,86 +1,61 @@
-import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/fetchData";
-import NewDatas from "./NewDatas";
-import NewPaginationCursor from "./NewPaginationCursor";
-import NewIndexModal from "./NewIndexModal";
+import React, { useEffect, useState } from "react";
+import NewSavedQueryCursor from "./SavedQueryCursor";
+import NewDatas from "../Datas";
 
-interface NewResultProps {
-  body: SearchDetailType;
+interface SavedQueryResultProps {
+  queryId: string;
+  count: number;
 }
 
-const NewResult: React.FC<NewResultProps> = ({ body }) => {
+const SavedQueryResult: React.FC<SavedQueryResultProps> = ({
+  queryId,
+  count,
+}) => {
   const [error, setError] = useState("");
   const [data, setData] = useState<Array<IData>>([]);
   const [waiting, setWaiting] = useState<boolean>(false);
-  const [count, setCount] = useState<number>(0);
   const [disable, setDisable] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
-  const [isAtlas, setIsAtlas] = useState<boolean>(false);
-  const [queryBody, setQueryBody] = useState<null | SearchDetailType>(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
 
-  const handleFetch = async () => {
+  const fetchSavedQueryData = async (
+    page: number,
+    numberOfData: number,
+    id: string
+  ) => {
     setWaiting(true);
-    setShow(false);
-    setError("");
-    setData([]);
-    console.log(body);
-    const data = await fetchData("/data", body, true);
-    console.log(data);
+    const body = { _id: id, limit: numberOfData, page };
+    const URL = process.env.REACT_APP_URL + "/get-queried-data";
+    const data = await fetch(URL, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    const result = await data.json();
 
-    setWaiting(false);
-    if (!data.success) {
-      setError(data.error);
-      setQueryBody(null);
-      return;
-    }
-
-    if (data.count === 0) {
+    if (!result.success) {
+      setWaiting(false);
+      setError(result.error || "An error occurred while fetching data.");
       setShow(false);
-      setError("No results found");
-      setQueryBody(null);
       return;
     }
+    setError("");
+    setData(result.data);
+    setWaiting(false);
 
-    if (data.success) {
-      setIsAtlas(data.isAtlas);
-      setData(data.data);
-      setCount(data.count);
-      setDisable(false);
-      setQueryBody(body);
-      setShow(true);
-    }
+    setDisable(false);
+    setShow(true);
   };
 
-  return (
-    <div>
-      <button
-        className=" mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center text-white bg-emerald-700 rounded hover:bg-emerald-800 disabled:hover:bg-emerald-700  focus:outline-none dark:bg-emerald-700 disabled:opacity-50"
-        disabled={waiting}
-        onClick={handleFetch}
-      >
-        Result
-      </button>
-      <button
-        className={
-          data.length === 0
-            ? "hidden"
-            : "ml-2 mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center bg-gray-600 hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-600 text-white rounded"
-        }
-        disabled={!queryBody}
-        onClick={async () => setShowModal(true)}
-      >
-        {" "}
-        Save Query
-      </button>
-      {showModal ? (
-        <NewIndexModal
-          body={queryBody}
-          setShowModal={setShowModal}
-          setQueryBody={setQueryBody}
-        />
-      ) : null}
+  useEffect(() => {
+    setShow(false);
+    fetchSavedQueryData(0, 25, queryId);
+  }, [queryId]);
 
+  return (
+    <>
       {waiting ? (
         <>
           <div role="status" className="flex items-center my-4">
@@ -117,18 +92,17 @@ const NewResult: React.FC<NewResultProps> = ({ body }) => {
 
       {show ? (
         <div>
-          <NewPaginationCursor
+          <NewSavedQueryCursor
             count={count}
-            body={body}
+            queryId={queryId}
             setData={setData}
             setDisable={setDisable}
-            isAtlas={isAtlas}
           />
           <NewDatas datas={data} count={count} disable={disable} />
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 
-export default NewResult;
+export default SavedQueryResult;

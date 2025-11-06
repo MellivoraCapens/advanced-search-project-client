@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import NewMainDropdown from "./NewMainDropdown";
+import MainDropdown from "./MainDropdown";
 
-interface NewSearchFieldProps {
+interface SearchFieldProps {
   handleSearchField: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const NewSearchField: React.FC<NewSearchFieldProps> = ({
-  handleSearchField,
-}) => {
+const SearchField: React.FC<SearchFieldProps> = ({ handleSearchField }) => {
   const [number, setNumber] = useState(0);
   const [searchField, setSearchField] = useState({});
 
@@ -59,7 +57,7 @@ const NewSearchField: React.FC<NewSearchFieldProps> = ({
       {[...Array(number)].map((_, i) => {
         return (
           <div key={i} className="mt-1">
-            <NewMainDropdown number={i} setSearchField={setSearchField} />
+            <MainDropdown number={i} setSearchField={setSearchField} />
           </div>
         );
       })}
@@ -67,4 +65,4 @@ const NewSearchField: React.FC<NewSearchFieldProps> = ({
   );
 };
 
-export default NewSearchField;
+export default SearchField;

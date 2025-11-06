@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import NewDetailSearch from "./NewDetailSearch";
-import NewRadioInput from "./NewRadioInput";
-import NewSearchField from "./NewSearchField";
-import NewTextField from "./NewTextField";
-import NewResult from "./NewResult";
-import NewSavedQueryMenu from "./NewSavedQueryMenu";
+import DetailSearch from "./DetailSearch";
+import RadioInput from "./RadioInput";
+import SearchField from "./SearchField";
+import TextField from "./TextField";
+import Result from "./Result";
+import SavedQueryMenu from "./saved-query-components/SavedQueryMenu";
 
-const NewMainDetailSearch: React.FC = () => {
+const MainDetailSearch: React.FC = () => {
   const [toggle, setToggle] = useState(true);
   const [addDetail, setAddDetail] = useState(false);
   const [operator, setOperator] = useState<boolean>(true);
@@ -60,12 +60,12 @@ const NewMainDetailSearch: React.FC = () => {
       >
         {toggle ? "Show Saved Queries" : "Show Query Maker"}
       </button>
-      <div className={`${toggle ? "invisible max-h-0" : null}`}>
-        <NewSavedQueryMenu />
+      <div className={`${toggle ? "invisible max-h-0" : "max-h-full"}`}>
+        <SavedQueryMenu />
       </div>
-      <div className={`${!toggle ? "invisible" : null}`}>
+      <div className={`${!toggle ? "invisible max-h-0" : "max-h-full"}`}>
         <div>
-          <NewTextField setSearch={setSearch} />
+          <TextField setSearch={setSearch} />
           <button
             className="px-3 py-2 text-xs font-medium text-center text-white my-1 rounded bg-indigo-700 hover:bg-indigo-800 dark:bg-indigo-900"
             onClick={() => setAddDetail((prev) => !prev)}
@@ -76,8 +76,8 @@ const NewMainDetailSearch: React.FC = () => {
         {addDetail ? (
           <div>
             <fieldset className="fieldset bg-neutral-950/5 w-xs border rounded border-slate-200 p-4 dark:bg-neutral-800 dark:border-neutral-600">
-              <NewRadioInput setOperator={setOperator} />
-              <NewSearchField handleSearchField={setSearch} />
+              <RadioInput setOperator={setOperator} />
+              <SearchField handleSearchField={setSearch} />
               {count > 0 ? (
                 <button
                   className="px-3 py-1 text-xs font-medium text-center text-white bg-red-800 rounded hover:bg-red-700  focus:outline-none dark:bg-red-800"
@@ -98,7 +98,7 @@ const NewMainDetailSearch: React.FC = () => {
               ) : null}
               {[...Array(count)].map((_, i) => {
                 return (
-                  <NewDetailSearch
+                  <DetailSearch
                     count={i}
                     layerC={1}
                     handleSearchDetail={setSearch}
@@ -116,10 +116,10 @@ const NewMainDetailSearch: React.FC = () => {
             </fieldset>
           </div>
         ) : null}
-        {toggle ? <NewResult body={search} /> : null}
+        <Result body={search} />
       </div>
     </div>
   );
 };
 
-export default NewMainDetailSearch;
+export default MainDetailSearch;

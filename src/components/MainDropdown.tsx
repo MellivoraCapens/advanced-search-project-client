@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import NewQueryInput from "./NewQueryInput";
+import QueryInput from "./QueryInput";
 
-interface NewMainDropdownProps {
+interface MainDropdownProps {
   number: number;
   setSearchField: React.Dispatch<React.SetStateAction<FieldType>>;
 }
 
-const NewMainDropdown: React.FC<NewMainDropdownProps> = ({
+const MainDropdown: React.FC<MainDropdownProps> = ({
   number,
   setSearchField,
 }) => {
@@ -69,11 +69,11 @@ const NewMainDropdown: React.FC<NewMainDropdownProps> = ({
           >
             {textSearch.operator ? "is" : "is not"}
           </button>
-          <NewQueryInput option={textSearch.path} setQuery={setQuery} />
+          <QueryInput option={textSearch.path} setQuery={setQuery} />
         </div>
       ) : null}
     </div>
   );
 };
 
-export default NewMainDropdown;
+export default MainDropdown;

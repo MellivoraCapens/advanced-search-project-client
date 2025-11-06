@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-interface NewRadioInputProps {
+interface RadioInputProps {
   setOperator: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NewRadioInput: React.FC<NewRadioInputProps> = ({ setOperator }) => {
+const RadioInput: React.FC<RadioInputProps> = ({ setOperator }) => {
   const OPERATORS = JSON.parse(process.env.REACT_APP_OPERATORS) as string[];
   const [selected, setSelected] = useState<string>(OPERATORS[0]);
 
@@ -41,4 +41,4 @@ const NewRadioInput: React.FC<NewRadioInputProps> = ({ setOperator }) => {
   );
 };
 
-export default NewRadioInput;
+export default RadioInput;

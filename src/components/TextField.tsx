@@ -13,11 +13,11 @@ interface searchDetailType {
   field?: { [key: number]: searchDetailType };
 }
 
-interface NewTextFieldProps {
+interface TextFieldProps {
   setSearch: React.Dispatch<React.SetStateAction<searchDetailType>>;
 }
 
-const NewTextField: React.FC<NewTextFieldProps> = ({ setSearch }) => {
+const TextField: React.FC<TextFieldProps> = ({ setSearch }) => {
   const OPTIONS = JSON.parse(process.env.REACT_APP_OPTIONS) as string[];
 
   const [textSearch, setTextSearch] = useState<TextSearch>({
@@ -79,4 +79,4 @@ const NewTextField: React.FC<NewTextFieldProps> = ({ setSearch }) => {
   );
 };
 
-export default NewTextField;
+export default TextField;

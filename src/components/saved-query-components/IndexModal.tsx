@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 
-interface NewIndexModalProps {
+interface IndexModalProps {
   body: SearchDetailType | null;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   setQueryBody: React.Dispatch<React.SetStateAction<null | SearchDetailType>>;
 }
 
-const NewIndexModal: React.FC<NewIndexModalProps> = ({
+const IndexModal: React.FC<IndexModalProps> = ({
   body,
   setShowModal,
   setQueryBody,
@@ -136,4 +136,4 @@ const NewIndexModal: React.FC<NewIndexModalProps> = ({
   );
 };
 
-export default NewIndexModal;
+export default IndexModal;

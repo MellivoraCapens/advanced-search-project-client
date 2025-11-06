@@ -1,12 +1,12 @@
 import React from "react";
-import Page from "../components/Page";
-import NewSearch from "../components/NewSearch";
+import Page from "./Page";
+import Search from "../components/Search";
 
 const HomePage: React.FC = () => {
   return (
     <div>
       <Page>
-        <NewSearch />
+        <Search />
       </Page>
     </div>
   );

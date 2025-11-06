@@ -2,13 +2,13 @@ import { count } from "console";
 import React, { useEffect, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 
-interface NewDataProps {
+interface DataProps {
   data: IData;
   number: number;
   disable: boolean;
 }
 
-const NewData: React.FC<NewDataProps> = ({ data, number, disable }) => {
+const Data: React.FC<DataProps> = ({ data, number, disable }) => {
   const [details, setDetails] = useState<boolean>(false);
 
   useEffect(() => {
@@ -113,4 +113,4 @@ const NewData: React.FC<NewDataProps> = ({ data, number, disable }) => {
   );
 };
 
-export default NewData;
+export default Data;

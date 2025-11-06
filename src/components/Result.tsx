@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchData } from "../utils/fetchData";
-import NewPaginationCursor from "./NewPaginationCursor";
-import NewDatas from "./NewDatas";
+import Datas from "./Datas";
+import PaginationCursor from "./PaginationCursor";
+import IndexModal from "./saved-query-components/IndexModal";
 
-interface NewSavedQueryResultProps {
+interface ResultProps {
   body: SearchDetailType;
 }
 
-const NewSavedQueryResult: React.FC<NewSavedQueryResultProps> = ({ body }) => {
+const Result: React.FC<ResultProps> = ({ body }) => {
   const [error, setError] = useState("");
   const [data, setData] = useState<Array<IData>>([]);
   const [waiting, setWaiting] = useState<boolean>(false);
@@ -15,26 +16,29 @@ const NewSavedQueryResult: React.FC<NewSavedQueryResultProps> = ({ body }) => {
   const [disable, setDisable] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [isAtlas, setIsAtlas] = useState<boolean>(false);
+  const [queryBody, setQueryBody] = useState<null | SearchDetailType>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleFetch = async () => {
     setWaiting(true);
     setShow(false);
     setError("");
     setData([]);
-    const data = await fetchData("/data", body, false);
+    console.log(body);
+    const data = await fetchData("/data", body, true);
     console.log(data);
 
     setWaiting(false);
     if (!data.success) {
       setError(data.error);
-
+      setQueryBody(null);
       return;
     }
 
     if (data.count === 0) {
       setShow(false);
       setError("No results found");
-
+      setQueryBody(null);
       return;
     }
 
@@ -43,17 +47,40 @@ const NewSavedQueryResult: React.FC<NewSavedQueryResultProps> = ({ body }) => {
       setData(data.data);
       setCount(data.count);
       setDisable(false);
-
+      setQueryBody(body);
       setShow(true);
     }
   };
 
-  useEffect(() => {
-    handleFetch();
-  }, [body]);
-
   return (
-    <>
+    <div>
+      <button
+        className=" mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center text-white bg-emerald-700 rounded hover:bg-emerald-800 disabled:hover:bg-emerald-700  focus:outline-none dark:bg-emerald-700 disabled:opacity-50"
+        disabled={waiting}
+        onClick={handleFetch}
+      >
+        Result
+      </button>
+      <button
+        className={
+          data.length === 0
+            ? "hidden"
+            : "ml-2 mt-2 px-3 py-2 text-xs min-w-[90px] font-medium text-center bg-gray-600 hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-600 text-white rounded"
+        }
+        disabled={!queryBody}
+        onClick={async () => setShowModal(true)}
+      >
+        {" "}
+        Save Query
+      </button>
+      {showModal ? (
+        <IndexModal
+          body={queryBody}
+          setShowModal={setShowModal}
+          setQueryBody={setQueryBody}
+        />
+      ) : null}
+
       {waiting ? (
         <>
           <div role="status" className="flex items-center my-4">
@@ -90,18 +117,18 @@ const NewSavedQueryResult: React.FC<NewSavedQueryResultProps> = ({ body }) => {
 
       {show ? (
         <div>
-          <NewPaginationCursor
+          <PaginationCursor
             count={count}
             body={body}
             setData={setData}
             setDisable={setDisable}
             isAtlas={isAtlas}
           />
-          <NewDatas datas={data} count={count} disable={disable} />
+          <Datas datas={data} count={count} disable={disable} />
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
 
-export default NewSavedQueryResult;
+export default Result;

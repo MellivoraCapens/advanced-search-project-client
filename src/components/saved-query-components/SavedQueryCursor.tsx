@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/fetchData";
 import { BsCompass } from "react-icons/bs";
 
-interface NewPaginationCursorProps {
+interface SavedQueryCursorProps {
   count: number;
-  body: SearchDetailType;
+  queryId: string;
   setData: React.Dispatch<React.SetStateAction<Array<IData>>>;
   setDisable: React.Dispatch<React.SetStateAction<boolean>>;
-  isAtlas: boolean;
 }
 
-const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
+const SavedQueryCursor: React.FC<SavedQueryCursorProps> = ({
   count,
-  body,
+  queryId,
   setData,
   setDisable,
-  isAtlas,
 }) => {
   const [waiting, setWaiting] = useState<boolean>(false);
   const [numberOfData, setNumberOfData] = useState<number>(25);
@@ -26,7 +23,6 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
   );
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
-  const [currentBody] = useState<SearchDetailType>(body);
 
   useEffect(() => {
     setMaxPage(Math.ceil(count / numberOfData));
@@ -35,29 +31,33 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
     }
   }, [page, numberOfData, maxPage]);
 
-  const fetchPageData = async (
+  const fetchSavedQueryData = async (
     page: number,
     numberOfData: number,
-    body: SearchDetailType
+    id: string
   ) => {
     setWaiting(true);
     setDisable(true);
-    const postBody: SearchDetailType = { ...currentBody };
-    postBody["limit"] = numberOfData;
-    postBody["page"] = page;
-    let URL = "/data/page";
-    if (!isAtlas) URL = URL + "/default";
-    console.log("Fetching data from:", URL);
-    const data = await fetchData(URL, postBody, false);
-    console.log(data);
-    if (!data.success) {
-      setErrorMessage(data.error || "An error occurred while fetching data.");
+    const body = { _id: id, limit: numberOfData, page };
+    const URL = process.env.REACT_APP_URL + "/get-queried-data";
+    const data = await fetch(URL, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    const result = await data.json();
+
+    if (!result.success) {
+      setErrorMessage(result.error || "An error occurred while fetching data.");
       setError(true);
       setWaiting(false);
       return;
     }
     setError(false);
-    setData(data.data);
+    setData(result.data);
     setWaiting(false);
     setDisable(false);
   };
@@ -73,16 +73,16 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
             onBlur={(e) => {
               if (+e.target.value < +e.target.min) {
                 setNumberOfData(+e.target.min);
-                fetchPageData(page, +e.target.min, body);
+                fetchSavedQueryData(page, +e.target.min, queryId);
                 return;
               }
               if (+e.target.value > +e.target.max) {
                 setNumberOfData(+e.target.max);
-                fetchPageData(page, +e.target.max, body);
+                fetchSavedQueryData(page, +e.target.max, queryId);
                 return;
               }
               setNumberOfData(+e.target.value);
-              fetchPageData(page, +e.target.value, body);
+              fetchSavedQueryData(page, +e.target.value, queryId);
             }}
             onChange={(e) => {
               setNumberOfData(+e.target.value);
@@ -108,7 +108,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
           disabled={!page || waiting || error}
           onClick={() => {
             setPage(0);
-            fetchPageData(0, numberOfData, body);
+            fetchSavedQueryData(0, numberOfData, queryId);
           }}
         >
           First
@@ -118,7 +118,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
           disabled={!page || waiting || error}
           onClick={() => {
             setPage((prev) => prev - 1);
-            fetchPageData(page - 1, numberOfData, body);
+            fetchSavedQueryData(page - 1, numberOfData, queryId);
           }}
         >
           Privious
@@ -131,7 +131,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
           disabled={(page + 1) * numberOfData >= count || waiting || error}
           onClick={() => {
             setPage((prev) => prev + 1);
-            fetchPageData(page + 1, numberOfData, body);
+            fetchSavedQueryData(page + 1, numberOfData, queryId);
           }}
         >
           Next
@@ -141,7 +141,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
           disabled={(page + 1) * numberOfData >= count || waiting || error}
           onClick={() => {
             setPage(maxPage);
-            fetchPageData(maxPage - 1, numberOfData, body);
+            fetchSavedQueryData(maxPage - 1, numberOfData, queryId);
           }}
         >
           Last
@@ -171,7 +171,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
               if (e.key === "Enter") {
                 if (targetPage !== 0) {
                   setPage(targetPage - 1);
-                  fetchPageData(targetPage - 1, numberOfData, body);
+                  fetchSavedQueryData(targetPage - 1, numberOfData, queryId);
                   setTargetPage(0);
                   const inputElem = document.getElementById(
                     "target"
@@ -191,7 +191,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
             onClick={() => {
               if (targetPage) {
                 setPage(targetPage - 1);
-                fetchPageData(targetPage - 1, numberOfData, body);
+                fetchSavedQueryData(targetPage - 1, numberOfData, queryId);
                 setTargetPage(0);
               }
               const inputElem = document.getElementById(
@@ -221,7 +221,7 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
               <button
                 className="border border-red-500 px-5 mt-5 disabled:bg-opacity-0 rounded-sm disabled:opacity-50 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-neutral-900"
                 disabled={waiting}
-                onClick={() => fetchPageData(page, numberOfData, body)}
+                onClick={() => fetchSavedQueryData(page, numberOfData, queryId)}
               >
                 Refresh
               </button>
@@ -233,4 +233,4 @@ const NewPaginationCursor: React.FC<NewPaginationCursorProps> = ({
   );
 };
 
-export default NewPaginationCursor;
+export default SavedQueryCursor;

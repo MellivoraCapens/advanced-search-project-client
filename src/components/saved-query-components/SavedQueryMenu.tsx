@@ -1,19 +1,25 @@
-import React, { useEffect } from "react";
-import NewSavedQueryResult from "./NewSavedQueryResult";
+import React, { useEffect, useState } from "react";
+import NewSavedQueryResult from "./SavedQueryResult";
 import { BsArrowClockwise } from "react-icons/bs";
+import { error } from "console";
 
-const NewSavedQueryMenu: React.FC = () => {
-  const [savedQueries, setSavedQueries] = React.useState<Array<ISavedQuery>>(
-    []
-  );
-  const [selectedQuery, setSelectedQuery] = React.useState<null | ISavedQuery>(
-    null
-  );
+const SavedQueryMenu: React.FC = () => {
+  const [savedQueries, setSavedQueries] = useState<Array<ISavedQuery>>([]);
+  const [showQueries, setShowQueries] = useState<Array<ISavedQuery>>([]);
+  const [selectedQuery, setSelectedQuery] = useState<null | ISavedQuery>(null);
+  const [error, setError] = useState<string>("");
+
   const fetchSavedQueries = async () => {
     const response = await fetch(`${process.env.REACT_APP_URL}/queries`);
     const data = await response.json();
     setSavedQueries(data.data);
-    console.log(data.data);
+    setShowQueries(data.data);
+    console.log(data);
+    if (data.error) {
+      setError("Something went wrong!");
+      return;
+    }
+    setError("");
   };
   useEffect(() => {
     fetchSavedQueries();
@@ -30,6 +36,22 @@ const NewSavedQueryMenu: React.FC = () => {
         <input
           className=" outline-none font-light bg-transparent w-full p-2"
           type="text"
+          onChange={(e) => {
+            if (e.target.value.length > 4) {
+              const filtered = [...savedQueries].filter((query) => {
+                if (
+                  query.title
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase())
+                ) {
+                  return query;
+                }
+              });
+              setShowQueries(filtered);
+            } else {
+              setShowQueries(savedQueries);
+            }
+          }}
         />
         <button
           className=" dark:bg-neutral-600 dark:hover:bg-neutral-500 text-neutral-900 flex text-center min-w-28 items-center justify-center rounded-l"
@@ -41,15 +63,15 @@ const NewSavedQueryMenu: React.FC = () => {
         >
           <div
             id="refresh-button"
-            className=" flex items-center justify-center min-w-28 min-h-28 ease-in-out duration-500"
+            className=" flex items-center justify-center min-w-28 min-h-28"
             onClick={async () => {
               document
                 .getElementById("refresh-button")
-                ?.classList.add("rotate-[360deg]");
+                ?.classList.add("animate-spin-once");
               await new Promise((_) => setTimeout(_, 500));
               document
                 .getElementById("refresh-button")
-                ?.classList.remove("rotate-[360deg]");
+                ?.classList.remove("animate-spin-once");
             }}
           >
             <BsArrowClockwise fontSize={25} />
@@ -61,6 +83,7 @@ const NewSavedQueryMenu: React.FC = () => {
           selectedQuery ? "h-[200px]" : "min-h-[200px]"
         }`}
       >
+        {error !== "" ? <p>{error}</p> : null}
         {savedQueries.length === 0 ? (
           <div
             role="status"
@@ -89,7 +112,7 @@ const NewSavedQueryMenu: React.FC = () => {
           </div>
         ) : (
           <ul className="overflow-y-scroll h-full">
-            {savedQueries.map((query, index) => {
+            {showQueries.map((query, index) => {
               return (
                 <li
                   id={`query-${index}`}
@@ -147,11 +170,14 @@ const NewSavedQueryMenu: React.FC = () => {
       {selectedQuery ? (
         <div className="mt-4">
           <h3 className="font-medium text-lg mb-2">{selectedQuery.title}</h3>
-          <NewSavedQueryResult body={selectedQuery.query} />
+          <NewSavedQueryResult
+            queryId={selectedQuery._id}
+            count={selectedQuery.numberOfResults}
+          />
         </div>
       ) : null}
     </div>
   );
 };
 
-export default NewSavedQueryMenu;
+export default SavedQueryMenu;

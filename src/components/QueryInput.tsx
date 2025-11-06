@@ -1,16 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-interface NewQueryInputProps {
+interface QueryInputProps {
   option: string;
   setQuery: React.Dispatch<React.SetStateAction<string | DateRange>>;
 }
 
-const NewQueryInput: React.FC<NewQueryInputProps> = ({ option, setQuery }) => {
+const QueryInput: React.FC<QueryInputProps> = ({ option, setQuery }) => {
   const DROPDOWN_ARRAY: string[] = ["hobbies", "role", "languages", "sex"];
   const TEXT_INPUT_ARRAY: string[] = ["name", "email", "company"];
   const DATE_INPUT_ARRAY: string[] = ["birthdate", "createdAt"];
+  const [selectedOption, setSelectedOption] = useState<string>(option);
 
-  const [dateRange, setDateRange] = React.useState<DateRange>({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: null,
     to: null,
   });
@@ -20,6 +21,11 @@ const NewQueryInput: React.FC<NewQueryInputProps> = ({ option, setQuery }) => {
       setQuery(dateRange);
     }
   }, [dateRange]);
+
+  if (option !== selectedOption) {
+    setSelectedOption(option);
+    console.log(selectedOption);
+  }
 
   if (DROPDOWN_ARRAY.includes(option)) {
     let selectionArray: string[] = [];
@@ -487,4 +493,4 @@ const NewQueryInput: React.FC<NewQueryInputProps> = ({ option, setQuery }) => {
   }
 };
 
-export default NewQueryInput;
+export default QueryInput;

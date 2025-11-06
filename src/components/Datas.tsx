@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import NewData from "./NewData";
+import React from "react";
+import Data from "./Data";
 
-interface NewDatasPorps {
+interface DatasPorps {
   datas: IData[];
   count: number;
   disable: boolean;
 }
 
-const NewDatas: React.FC<NewDatasPorps> = ({ datas, count, disable }) => {
+const Datas: React.FC<DatasPorps> = ({ datas, count, disable }) => {
   return (
     <div className="mt-2 text-neutral-600 dark:text-neutral-300">
       <p className="font-extralight text-sm">{count} Documents found.</p>
@@ -19,11 +19,11 @@ const NewDatas: React.FC<NewDatasPorps> = ({ datas, count, disable }) => {
         }`}
       >
         {[...datas].map((data, index) => (
-          <NewData number={index} data={data} disable={disable} />
+          <Data number={index} data={data} disable={disable} />
         ))}
       </div>
     </div>
   );
 };
 
-export default NewDatas;
+export default Datas;
