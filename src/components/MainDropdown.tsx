@@ -69,7 +69,11 @@ const MainDropdown: React.FC<MainDropdownProps> = ({
           >
             {textSearch.operator ? "is" : "is not"}
           </button>
-          <QueryInput option={textSearch.path} setQuery={setQuery} />
+          <QueryInput
+            option={textSearch.path}
+            query={textSearch.query}
+            setQuery={setQuery}
+          />
         </div>
       ) : null}
     </div>

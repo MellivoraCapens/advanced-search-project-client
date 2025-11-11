@@ -60,10 +60,18 @@ const MainDetailSearch: React.FC = () => {
       >
         {toggle ? "Show Saved Queries" : "Show Query Maker"}
       </button>
-      <div className={`${toggle ? "invisible max-h-0" : "max-h-full"}`}>
+      <div
+        className={`${
+          toggle ? " invisible h-0 overflow-hidden" : "max-h-full"
+        }`}
+      >
         <SavedQueryMenu />
       </div>
-      <div className={`${!toggle ? "invisible max-h-0" : "max-h-full"}`}>
+      <div
+        className={`${
+          !toggle ? "invisible h-0 overflow-hidden" : "max-h-full"
+        }`}
+      >
         <div>
           <TextField setSearch={setSearch} />
           <button

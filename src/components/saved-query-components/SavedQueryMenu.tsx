@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NewSavedQueryResult from "./SavedQueryResult";
 import { BsArrowClockwise } from "react-icons/bs";
-import { error } from "console";
+import QueryVisualizer from "./QueryVisualizer";
 
 const SavedQueryMenu: React.FC = () => {
   const [savedQueries, setSavedQueries] = useState<Array<ISavedQuery>>([]);
@@ -27,7 +27,6 @@ const SavedQueryMenu: React.FC = () => {
 
   const handleClick = (query: ISavedQuery) => {
     setSelectedQuery(query);
-    console.log("clicked: " + query.title);
   };
 
   return (
@@ -170,6 +169,7 @@ const SavedQueryMenu: React.FC = () => {
       {selectedQuery ? (
         <div className="mt-4">
           <h3 className="font-medium text-lg mb-2">{selectedQuery.title}</h3>
+          <QueryVisualizer query={selectedQuery.query} />
           <NewSavedQueryResult
             queryId={selectedQuery._id}
             count={selectedQuery.numberOfResults}

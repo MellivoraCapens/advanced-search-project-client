@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 
 interface QueryInputProps {
   option: string;
+  query: string | DateRange;
   setQuery: React.Dispatch<React.SetStateAction<string | DateRange>>;
 }
 
-const QueryInput: React.FC<QueryInputProps> = ({ option, setQuery }) => {
+const QueryInput: React.FC<QueryInputProps> = ({ option, query, setQuery }) => {
   const DROPDOWN_ARRAY: string[] = ["hobbies", "role", "languages", "sex"];
   const TEXT_INPUT_ARRAY: string[] = ["name", "email", "company"];
   const DATE_INPUT_ARRAY: string[] = ["birthdate", "createdAt"];
@@ -416,11 +417,12 @@ const QueryInput: React.FC<QueryInputProps> = ({ option, setQuery }) => {
       <select
         className="bg-gray-50/0 border border-gray-950/25 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700/0 dark:border-gray-100/15 dark:placeholder-gray-400 dark:text-gray-300 dark:focus:ring-blue-500 dark:focus:border-blue-500"
         onChange={(e) => setQuery(e.target.value)}
-        defaultValue={"default"}
+        defaultValue={""}
+        value={typeof query === "string" ? query : ""}
         name="dropdown"
         id="dropdown"
       >
-        <option value="default" disabled>
+        <option value="" disabled>
           Select...
         </option>
         {selectionArray.map((item, index) => (
@@ -431,6 +433,7 @@ const QueryInput: React.FC<QueryInputProps> = ({ option, setQuery }) => {
       </select>
     );
   }
+
   if (TEXT_INPUT_ARRAY.includes(option)) {
     return (
       <input
@@ -441,6 +444,7 @@ const QueryInput: React.FC<QueryInputProps> = ({ option, setQuery }) => {
       />
     );
   }
+
   if (DATE_INPUT_ARRAY.includes(option)) {
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
