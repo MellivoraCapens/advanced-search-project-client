@@ -73,7 +73,6 @@ export const fetchData = async (
 
     return data;
   } catch (err: any) {
-    console.dir(err, { depth: null });
     return { error: `Error: ${err.message}!`, success: err.success || false };
   }
 };

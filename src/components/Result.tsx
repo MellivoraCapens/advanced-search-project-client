@@ -24,9 +24,8 @@ const Result: React.FC<ResultProps> = ({ body }) => {
     setShow(false);
     setError("");
     setData([]);
-    console.log(body);
+
     const data = await fetchData("/data", body, true);
-    console.log(data);
 
     setWaiting(false);
     if (!data.success) {

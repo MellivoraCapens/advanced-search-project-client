@@ -21,7 +21,6 @@ const IndexModal: React.FC<IndexModalProps> = ({
       const response = await fetch(`${process.env.REACT_APP_URL}/query-titles`);
       const data = await response.json();
       setUsedTitles(data.data);
-      console.log(data.data);
     };
     fetchTitles();
   }, []);
@@ -30,8 +29,6 @@ const IndexModal: React.FC<IndexModalProps> = ({
     if (!body || title.length < 12) return;
     setWaiting(true);
     body.title = title;
-
-    console.log(body);
 
     const res = await fetch(`${process.env.REACT_APP_URL}/query`, {
       method: "POST",

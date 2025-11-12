@@ -14,7 +14,7 @@ const SavedQueryMenu: React.FC = () => {
     const data = await response.json();
     setSavedQueries(data.data);
     setShowQueries(data.data);
-    console.log(data);
+
     if (data.error) {
       setError("Something went wrong!");
       return;

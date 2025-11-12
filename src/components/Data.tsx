@@ -1,4 +1,3 @@
-import { count } from "console";
 import React, { useEffect, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 

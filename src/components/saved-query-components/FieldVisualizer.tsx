@@ -15,7 +15,6 @@ const FieldVisualizer: React.FC<FieldVisualizerProps> = ({ field }) => {
       const item = field[key];
       setFieldItems((prev) => [...prev, item]);
     }
-    console.log(field);
   }, [field]);
 
   useEffect(() => {

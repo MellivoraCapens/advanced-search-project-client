@@ -47,9 +47,7 @@ const PaginationCursor: React.FC<PaginationCursorProps> = ({
     postBody["page"] = page;
     let URL = "/data/page";
     if (!isAtlas) URL = URL + "/default";
-    console.log("Fetching data from:", URL);
     const data = await fetchData(URL, postBody, false);
-    console.log(data);
     if (!data.success) {
       setErrorMessage(data.error || "An error occurred while fetching data.");
       setError(true);

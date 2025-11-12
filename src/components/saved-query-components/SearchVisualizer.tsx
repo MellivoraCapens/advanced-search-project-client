@@ -8,13 +8,11 @@ const SearchVisualizer: React.FC<SearchVisualizerProps> = ({ object }) => {
   const [searchItems, setSearchItems] = useState<SearchType[]>([]);
   useEffect(() => {
     setSearchItems([]);
-    console.log(object);
 
     for (const key in object) {
       const item = object[key];
       setSearchItems((prev) => [...prev, item]);
     }
-    console.log(searchItems);
   }, [object]);
 
   return (

@@ -25,7 +25,6 @@ const QueryInput: React.FC<QueryInputProps> = ({ option, query, setQuery }) => {
 
   if (option !== selectedOption) {
     setSelectedOption(option);
-    console.log(selectedOption);
   }
 
   if (DROPDOWN_ARRAY.includes(option)) {
