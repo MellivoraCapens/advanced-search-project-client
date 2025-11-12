@@ -17,10 +17,6 @@ const FieldVisualizer: React.FC<FieldVisualizerProps> = ({ field }) => {
     }
   }, [field]);
 
-  useEffect(() => {
-    console.log(fieldItems);
-  }, [fieldItems]);
-
   return (
     <div className="">
       {fieldItems.map((item, index) => {
